@@ -1,6 +1,7 @@
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from .models import Question
+from django.db.models import Sum
 
 def index(request):
     latest_question_list = Question.objects.order_by('-pub_date')[:5]
@@ -24,6 +25,12 @@ def vote(request, question_id):
         selected_choice.votes += 1
         selected_choice.save()
         return redirect('polls:results', question_id=question.id)
+    
 def results(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
-    return render(request, 'polls/results.html', {'question': question})
+    total_votes = question.choice_set.aggregate(total=Sum('votes'))['total'] or 0
+    context = {
+        'question': question,
+        'total_votes': total_votes,
+    }
+    return render(request, 'polls/results.html', context)

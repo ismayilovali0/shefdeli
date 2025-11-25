@@ -1,11 +1,40 @@
-<h1>{{ question.question_text }}</h1>
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ question.question_text }}</title>
+    <link rel="stylesheet" href="{% static 'polls/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>{{ question.question_text }}</h1>
 
-<form action="{% url 'polls:vote' question.id %}" method="post">
-{% csrf_token %}
-{% for choice in question.choice_set.all %}
-    <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
-    <label for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
-{% endfor %}
-<input type="submit" value="Səs ver">
-</form>
+        {% if error_message %}
+            <p class="error">{{ error_message }}</p>
+        {% endif %}
+
+        <form action="{% url 'polls:vote' question.id %}" method="post">
+            {% csrf_token %}
+            <div class="choices">
+                {% for choice in question.choice_set.all %}
+                    <label class="choice-item">
+                        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+                        <span class="radio-custom"></span>
+                        <span class="choice-text">{{ choice.choice_text }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="vote-btn">
+                Səs Ver
+            </button>
+        </form>
+
+        <div class="back-link">
+            <a href="{% url 'polls:index' %}">← Bütün səsvermələrə qayıt</a>
+        </div>
+    </div>
+</body>
+</html>

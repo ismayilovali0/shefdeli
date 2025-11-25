@@ -1,9 +1,53 @@
-<h1>{{ question.question_text }}</h1>
+{% load static %}
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nəticələr: {{ question.question_text }}</title>
+    <link rel="stylesheet" href="{% static 'polls/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>{{ question.question_text }}</h1>
+        <p class="subtitle">Səsvermə nəticələri</p>
 
-<ul>
-{% for choice in question.choice_set.all %}
-    <li>{{ choice.choice_text }} -- {{ choice.votes }} səs</li>
-{% endfor %}
-</ul>
+        <div class="results-container">
+            {% for choice in question.choice_set.all %}
+                {% with total=question.total_votes %}
+                    {% if total > 0 %}
+                        {% widthratio choice.votes total 100 as percentage %}
+                    {% else %}
+                        {% with percentage=0 %}{% endwith %}
+                    {% endif %}
 
-<a href="{% url 'polls:detail' question.id %}">Yenidən səs ver?</a>
+                    <div class="result-item">
+                        <div class="choice-header">
+                            <span class="choice-text">{{ choice.choice_text }}</span>
+                            <span class="vote-count">{{ choice.votes }} səs 
+                                {% if total > 0 %}({{ percentage|floatformat:1 }}%){% endif %}
+                            </span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: {{ percentage }}%"></div>
+                        </div>
+                    </div>
+                {% endwith %}
+            {% endfor %}
+        </div>
+
+        <div class="total-votes">
+            Ümumi səs: <strong>{{ question.total_votes }}</strong>
+        </div>
+
+        <div class="action-buttons">
+            <a href="{% url 'polls:detail' question.id %}" class="btn-secondary">
+                Yenidən səs ver
+            </a>
+            <a href="{% url 'polls:index' %}" class="btn-primary">
+                Bütün səsvermələrə qayıt
+            </a>
+        </div>
+    </div>
+</body>
+</html>

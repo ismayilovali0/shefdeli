@@ -1,9 +1,33 @@
-{% if latest_question_list %}
-    <ul>
-    {% for question in latest_question_list %}
-        <li><a href="{% url 'polls:detail' question.id %}">{{ question.question_text }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>Heç bir sual yoxdur.</p>
-{% endif %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Səsvermələr</title>
+    <link rel="stylesheet" href="{% static 'polls/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Səsvermələr</h1>
+        <p class="subtitle">Fikrinizi bildirin, səs verin!</p>
+
+        {% if latest_question_list %}
+            <div class="polls-list">
+                {% for question in latest_question_list %}
+                    <div class="poll-item">
+                        <a href="{% url 'polls:detail' question.id %}">
+                            {{ question.question_text }}
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-polls">
+                <p>Hələ heç bir səsvermə yoxdur :(</p>
+                <p>Tezliklə yeni sorğular əlavə olunacaq!</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

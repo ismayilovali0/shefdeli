@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xoş gəldiniz! • Django Polls</title>
+    <link rel="stylesheet" href="{% static 'polls/style.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1>Xoş gəlmisiniz!</h1>
+            <p class="subtitle">Hazırdır? Səsvermələrə keçin və fikrinizi bildirin</p>
+
+            <div class="buttons">
+                <a href="{% url 'polls:index' %}" class="btn-primary">
+                    Səsvermələrə keç
+                </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'admin:index' %}" class="btn-secondary">
+                        Admin panel
+                    </a>
+                {% else %}
+                    <a href="{% url 'admin:index' %}" class="btn-secondary">
+                        Adminə giriş
+                    </a>
+                {% endif %}
+            </div>
+
+            <div class="rocket">
+                Django Polls App
+            </div>
+        </div>
+    </div>
+</body>
+</html>
